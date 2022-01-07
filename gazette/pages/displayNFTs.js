@@ -12,138 +12,56 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
-import styles from '../styles/Display.module.css';
-import DisplayNFTs from '../components/DisplayNFTs';
-import Router, {useRouter} from 'next/router';
+import styles from '../styles/Display.module.css'
+import DisplayNFTs from '../components/DisplayNFTs'
+import SwitchNav from '../components/SwitchNav'
+import Dashboard from '../components/Dashboard'
+import Mint from '../components/MintNFTs';
+import Loans from '../components/Loans';
+import axios from 'axios';
+import Web3 from 'web3';
 const drawerWidth = 240;
 
 
-export default function ClippedDrawer() {
-  
-  const [state , setState] = useState("displayNFTs");
-  const router = useRouter();
-  
-  const props = {
-        res: {
-            nfts: [{
-                chain_id:1,
-                id:1,
-            },{
-                chain_id:1,
-                id:1,
-            },{
-                chain_id:1,
-                id:1,
-            },{
-                chain_id:1,
-                id:1,
-            }]
-        }
-    }
-    function renderNfts() {
-        return (
-          <div className={styles.masonry}>
-            {props.res?.nfts?.map((item) => {
-              let img_src;
-              if (item.chain_id === 1) {
-                img_src = "/icons/eth_logo.png";
-              } else if (item.chain_id === 56) {
-                img_src = "/icons/bsc_logo.png";
-              } else {
-                img_src = "/icons/polygon_logo.png";
-              }
-    
-              const {
-                token_address,
-                token_id,
-                chain_id,
-                token_uri,
-                metadata_storage,
-                media_storage,
-              } = item;
-              const productLink = `/profile/${props.res.profileid}/${token_address}/${token_id}?chainid=${chain_id}`;
-    
-              const icon_display = function () {
-                if (metadata_storage === "ipfs") {
-                  return (
-                    <div className={styles.tooltip}>
-                      <a href={token_uri} target="_blank">
-                        <img className={styles.img} src="/icons/ipfs.png" />
-                      </a>
-                      <span className={styles.tooltiptext}>View on IPFS</span>
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div className={styles.tooltip}>
-                      <a href={token_uri} target="_blank">
-                        <img className={styles.img} src="/icons/unknown.png" />
-                      </a>
-                      <span className={styles.tooltiptext}>View on Central</span>
-                    </div>
-                  );
-                }
-              };
-              return (
-                <>
-                  <a key={item.id} className={styles.mItem} href={productLink}>
-                    <div className={styles.nft_user}>
-                      <div className={styles.nft_title}>
-                        <div>Anubhav Singh</div>
-                      </div>
-                      <div className={styles.nft_platform}>
-                        {icon_display()}
-    
-                        <img src={img_src} />
-                      </div>
-                    </div>
-                    {/*item.uri_meta_data.animation_url && (
-                      <iframe
-                        src={item.uri_meta_data.animation_url}
-                        width="320"
-                        height="240"
-                        controls
-                      />
-                    )*/}
-                    <div>
-                      <img
-                        src="/icons/no_image.jpeg"
-                        alt="Error displaying image"
-                        //  onClick={productRedirect(productLink)}
-                      />
-                    </div>
-                    <div className={styles.nft_social}>
-                      {/* <div className={styles.like_comment}>
-                                      <img src="icons/Like.svg" />
-                                      <div>92</div>
-                                    </div>
-                                    <div className={styles.like_comment}>
-                                      <img src="icons/Comment.svg" />
-                                      <div>92</div>
-                                    </div> */}
-                    </div>
-                  </a>
-                </>
-              );
-            })}
-          </div>
-        );
-      }
+export default function ClippedDrawer({data}) {
 
-      function displayDashboard(){
-        return(
-          <h1>Dashboard</h1>
-        )
-      }
+  // const options = ['Dashboard', 'NFT\'s', 'Mint NFt\'s', 'Loans'];
+ const [option , setOption] = useState(<Dashboard coin={data}/>);
+
+  // var n=0;
+// console.log(data);
+
+
+const handleDisplayNFTClick =(e) => {
+  e.preventDefault();      
+  setOption(<DisplayNFTs />)
+      
+}
+
+const handleDashboardClick =(e) => {
+  e.preventDefault();
+  setOption(<Dashboard coin={data}/>)
+}
+
+const handleMintNFTs = (e) => {
+  e.preventDefault();
+  setOption(<Mint />)
+}
+
+const handleLoans = (e) => {
+  e.preventDefault();
+  setOption(<Loans />)
+}
 
 
   return (
+    
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
-          <Typography variant="h6" noWrap component="div">
-            Clipped drawer
+          <Typography variant="h5" noWrap component="div">
+            Gazette 
           </Typography>
         </Toolbar>
       </AppBar>
@@ -156,37 +74,98 @@ export default function ClippedDrawer() {
         }}
       >
         <Toolbar />
-        <Box sx={{ overflow: 'auto' }}>
-          <List>
-            {['Dashboard', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <ListItem button key={text} onClick={(text) => {
-                setState(text);
-                console.log(state);
-              }}>
+        <Box sx={{ overflow: 'none' }}>
+          <List  onClick={handleDashboardClick}>
+
+              <ListItem button >
                 <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary='Dashboard'/>
               </ListItem>
-            ))}
           </List>
+
+          <List onClick={handleDisplayNFTClick}>
+
+<ListItem button >
+  <ListItemIcon>
+
+  </ListItemIcon>
+  <ListItemText primary='NFTs' />
+</ListItem>
+</List>
+
+<List onClick = {handleMintNFTs}>
+
+<ListItem button >
+  <ListItemIcon>
+
+  </ListItemIcon>
+  <ListItemText primary='MINT NFts' onClick={()=>{
+
+  }}/>
+</ListItem>
+</List>
+
+<List onClick = {handleLoans}>
+
+<ListItem button >
+  <ListItemIcon>
+
+  </ListItemIcon>
+  <ListItemText primary='LOANS(...pending)' onClick={()=>{
+
+  }}/>
+</ListItem>
+</List>
+
           <Divider />
-          <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
         </Box>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
-        <DisplayNFTs />
+        
+        {option}
+
+        <SwitchNav/>
       </Box>
     </Box>
+    
   );
+}
+
+
+export async function getStaticProps(context) {
+
+  const config = {
+    method: "get",
+    url: "https://deep-index.moralis.io/api/v2/0x057Ec652A4F150f7FF94f089A38008f49a0DF88e/balance?chain=rinkeby",
+    headers: {
+      accept: "application/json",
+      "X-API-Key":
+        "xmwUXdWkDCSAAPK3RR84RolJ4JPYKLEvvC48ojHZvxoPKFeYeiGl1Q09WZYXVAW8",
+    },
+    params: {
+      address: '0xcf1443227C640163EDEaAD05f43B1b116863Bf1f',
+    },
+  };
+
+
+
+
+  //--------------------------------------------------
+  const res = await axios(config)
+var data = res.data.balance
+
+  // if (!data) {
+  //   return {
+  //     notFound: true,
+  //   }
+  // }
+data = Web3.utils.fromWei(data, 'ether')
+    // console.log(data);
+  return {
+    props: { data }, // will be passed to the page component as props
+  }
+
 }
