@@ -91,7 +91,6 @@ export default function ClippedDrawer() {
                         //  onClick={productRedirect(productLink)}
                       />
                     </div>
-                    <div className={styles.nft_social}>
                       {/* <div className={styles.like_comment}>
                                       <img src="icons/Like.svg" />
                                       <div>92</div>
@@ -100,7 +99,6 @@ export default function ClippedDrawer() {
                                       <img src="icons/Comment.svg" />
                                       <div>92</div>
                                     </div> */}
-                    </div>
                   </a>
                 </>
               );
