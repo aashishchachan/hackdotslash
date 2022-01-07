@@ -7,26 +7,12 @@ import RestoreIcon from '@mui/icons-material/Restore';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import Paper from '@mui/material/Paper';
-import CardGiftcardTwoToneIcon from '@mui/icons-material/CardGiftcardTwoTone';function refreshMessages() {
-  const getRandomInt = (max) => Math.floor(Math.random() * Math.floor(max));
-
-  return Array.from(new Array(50)).map(
-    () => messageExamples[getRandomInt(messageExamples.length)],
-  );
-}
+import CardGiftcardTwoToneIcon from '@mui/icons-material/CardGiftcardTwoTone';
 
 export default function FixedBottomNavigation() {
   const [value, setValue] = React.useState(0);
-  const ref = React.useRef(null);
-  const [messages, setMessages] = React.useState(() => refreshMessages());
-
-  React.useEffect(() => {
-    ref.current.ownerDocument.body.scrollTop = 0;
-    setMessages(refreshMessages());
-  }, [value, setMessages]);
-
   return (
-    <Box sx={{ pb: 7 }} ref={ref}>
+    <Box sx={{ pb: 7 }} >
       <CssBaseline />
       <Paper sx={{ position: 'fixed', bottom: 0, left: '18%', right: 0 }} elevation={3}>
         <BottomNavigation
