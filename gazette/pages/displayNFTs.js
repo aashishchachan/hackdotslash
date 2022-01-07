@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React,{useState} from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import AppBar from '@mui/material/AppBar';
@@ -12,12 +12,18 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
-import styles from '../styles/Display.module.css'
-import DisplayNFTs from '../components/DisplayNFTs'
+import styles from '../styles/Display.module.css';
+import DisplayNFTs from '../components/DisplayNFTs';
+import Router, {useRouter} from 'next/router';
 const drawerWidth = 240;
 
+
 export default function ClippedDrawer() {
-    const props = {
+  
+  const [state , setState] = useState("displayNFTs");
+  const router = useRouter();
+  
+  const props = {
         res: {
             nfts: [{
                 chain_id:1,
@@ -123,6 +129,14 @@ export default function ClippedDrawer() {
           </div>
         );
       }
+
+      function displayDashboard(){
+        return(
+          <h1>Dashboard</h1>
+        )
+      }
+
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -144,8 +158,11 @@ export default function ClippedDrawer() {
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
           <List>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <ListItem button key={text}>
+            {['Dashboard', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+              <ListItem button key={text} onClick={(text) => {
+                setState(text);
+                console.log(state);
+              }}>
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                 </ListItemIcon>
