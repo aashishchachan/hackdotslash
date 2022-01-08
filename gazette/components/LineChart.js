@@ -71,7 +71,7 @@ const LineChart = () => {
     return (
         <div width="50%" >
   <h1>Line Chart</h1>
-  <Line data={data} height={100} width={600} />
+  <Line data={data} height={300} width={600} />
   </div>)
 }
 

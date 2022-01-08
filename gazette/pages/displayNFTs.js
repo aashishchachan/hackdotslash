@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React,{useState} from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import AppBar from '@mui/material/AppBar';
@@ -15,17 +15,53 @@ import MailIcon from '@mui/icons-material/Mail';
 import styles from '../styles/Display.module.css'
 import DisplayNFTs from '../components/DisplayNFTs'
 import SwitchNav from '../components/SwitchNav'
+import Dashboard from '../components/Dashboard'
+import Mint from '../components/MintNFTs';
+import Loans from '../components/Loans';
+import axios from 'axios';
+import Web3 from 'web3';
 const drawerWidth = 240;
 
-export default function ClippedDrawer() {
+
+export default function ClippedDrawer({data}) {
+
+  // const options = ['Dashboard', 'NFT\'s', 'Mint NFt\'s', 'Loans'];
+ const [option , setOption] = useState(<Dashboard coin={data}/>);
+
+  // var n=0;
+// console.log(data);
+
+
+const handleDisplayNFTClick =(e) => {
+  e.preventDefault();      
+  setOption(<DisplayNFTs />)
+      
+}
+
+const handleDashboardClick =(e) => {
+  e.preventDefault();
+  setOption(<Dashboard coin={data}/>)
+}
+
+const handleMintNFTs = (e) => {
+  e.preventDefault();
+  setOption(<Mint />)
+}
+
+const handleLoans = (e) => {
+  e.preventDefault();
+  setOption(<Loans />)
+}
+
+
   return (
-    <>
+    
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
           <Typography variant="h5" noWrap component="div">
-            Gazette
+            Gazette 
           </Typography>
         </Toolbar>
       </AppBar>
@@ -39,35 +75,97 @@ export default function ClippedDrawer() {
       >
         <Toolbar />
         <Box sx={{ overflow: 'none' }}>
-          <List>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <ListItem button key={text}>
+          <List  onClick={handleDashboardClick}>
+
+              <ListItem button >
                 <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary='Dashboard'/>
               </ListItem>
-            ))}
           </List>
+
+          <List onClick={handleDisplayNFTClick}>
+
+<ListItem button >
+  <ListItemIcon>
+
+  </ListItemIcon>
+  <ListItemText primary='NFTs' />
+</ListItem>
+</List>
+
+<List onClick = {handleMintNFTs}>
+
+<ListItem button >
+  <ListItemIcon>
+
+  </ListItemIcon>
+  <ListItemText primary='MINT NFts' onClick={()=>{
+
+  }}/>
+</ListItem>
+</List>
+
+<List onClick = {handleLoans}>
+
+<ListItem button >
+  <ListItemIcon>
+
+  </ListItemIcon>
+  <ListItemText primary='LOANS(...pending)' onClick={()=>{
+
+  }}/>
+</ListItem>
+</List>
+
           <Divider />
-          <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
         </Box>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
-        <DisplayNFTs />
+        
+        {option}
+
         <SwitchNav/>
       </Box>
     </Box>
-    </>
+    
   );
+}
+
+
+export async function getStaticProps(context) {
+
+  const config = {
+    method: "get",
+    url: "https://deep-index.moralis.io/api/v2/0x057Ec652A4F150f7FF94f089A38008f49a0DF88e/balance?chain=rinkeby",
+    headers: {
+      accept: "application/json",
+      "X-API-Key":
+        "xmwUXdWkDCSAAPK3RR84RolJ4JPYKLEvvC48ojHZvxoPKFeYeiGl1Q09WZYXVAW8",
+    },
+    params: {
+      address: '0xcf1443227C640163EDEaAD05f43B1b116863Bf1f',
+    },
+  };
+
+
+
+
+  //--------------------------------------------------
+  const res = await axios(config)
+var data = res.data.balance
+
+  // if (!data) {
+  //   return {
+  //     notFound: true,
+  //   }
+  // }
+data = Web3.utils.fromWei(data, 'ether')
+    // console.log(data);
+  return {
+    props: { data }, // will be passed to the page component as props
+  }
+
 }

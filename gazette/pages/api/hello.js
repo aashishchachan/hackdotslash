@@ -12,11 +12,12 @@ export default async function handler(req, res) {
         "xmwUXdWkDCSAAPK3RR84RolJ4JPYKLEvvC48ojHZvxoPKFeYeiGl1Q09WZYXVAW8",
     },
     params: {
-      address: "0xcf1443227C640163EDEaAD05f43B1b116863Bf1f",
+      address: '0xcf1443227C640163EDEaAD05f43B1b116863Bf1f',
     },
   };
   const resp = await axios(config);
   const data = resp.data;
   console.log(resp.data);
+  // return data.balance;
   res.status(200).json({data})
 }
